@@ -1,40 +1,41 @@
 import './App.css';
 import React, { useState } from 'react';
+
 function App() {
-  const [cardList, setcardList] = useState([
-    { id: 1, order: 1, text: 'card 1' },
-    { id: 2, order: 2, text: 'card 2' },
-    { id: 3, order: 3, text: 'card 3' },
-    { id: 4, order: 4, text: 'card 4' },
+  const [cardList, setCardList] = useState([
+    { id: 1, order: 1, name: 'ACE' },
+    { id: 2, order: 2, name: 'VALET' },
+    { id: 3, order: 3, name: 'QUEEN' },
+    { id: 4, order: 4, name: 'KING' },
   ]);
   const [currentCard, setCurrentCard] = useState(null);
-  function dragStartHandler(e, card) {
-    console.log('drop', card);
-    setCurrentCard(card);
+
+  function dragStartHandle(e, item) {
+    setCurrentCard(item);
+    console.log('drag', item);
   }
-  function dragEndHandler(e) {
-    e.target.style.background = 'white';
+  function dragEndHandle(e) {
+    e.target.style.backgroundColor = 'white';
   }
-  function dragOverHandler(e, card) {
+  function dragOverHandle(e, item) {
     e.preventDefault();
-    e.target.style.background = 'lightgray';
+    e.target.style.backgroundColor = 'lightgray';
   }
-  function dropHandler(e, card) {
+  function dropHandle(e, item) {
     e.preventDefault();
-    setcardList(
+    setCardList(
       cardList.map((c) => {
-        if (c.id === card.id) {
+        if (c.id === item.id) {
           return { ...c, order: currentCard.order };
         }
         if (c.id === currentCard.id) {
-          return { ...c, order: card.order };
+          return { ...c, order: item.order };
         }
         return c;
       }),
     );
-    e.target.style.background = 'white';
   }
-  const nullCard = (a, b) => {
+  const counter = (a, b) => {
     if (a.order > b.order) {
       return 1;
     } else {
@@ -43,16 +44,15 @@ function App() {
   };
   return (
     <div className="app">
-      {cardList.sort(nullCard).map((card) => (
-        //свойство draggable позволяет перетаскивать объекты
+      {cardList.sort(counter).map((item) => (
         <div
-          onDragStart={(e) => dragStartHandler(e, card)}
-          onDragEnd={(e) => dragEndHandler(e)}
-          onDragOver={(e) => dragOverHandler(e)}
-          onDrop={(e) => dropHandler(e, card)}
+          onDragStart={(e) => dragStartHandle(e, item)}
+          onDragEnd={(e) => dragEndHandle(e)}
+          onDragOver={(e) => dragOverHandle(e)}
+          onDrop={(e) => dropHandle(e, item)}
           draggable={true}
           className={'card'}>
-          {card.text}
+          {item.name}
         </div>
       ))}
     </div>
